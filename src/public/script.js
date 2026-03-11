@@ -68,6 +68,8 @@ document.getElementById('meetingForm').addEventListener('submit', async (e) => {
     
     const date = document.getElementById('date').value;
     const startTime = document.getElementById('startTime').value;
+    const topic = document.getElementById('topic').value;
+    const duration = document.getElementById('duration').value;
     
     if (!date || !startTime) {
         alert('Please fill in both date and time');
@@ -77,10 +79,10 @@ document.getElementById('meetingForm').addEventListener('submit', async (e) => {
     const startDateTime = new Date(`${date}T${startTime}:00`);
     
     const meetingData = {
-        topic: 'New Meeting',
+        topic: topic || 'Quick Meeting',
         type: 2,
         start_time: startDateTime.toISOString(),
-        duration: 30
+        duration: duration ? parseInt(duration) : 30
     };
     
     try {
