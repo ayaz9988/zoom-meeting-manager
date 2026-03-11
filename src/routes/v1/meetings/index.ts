@@ -6,6 +6,6 @@ meetings.get('/', gettingMeetings);
 
 meetings.post('/', createMeeting);
 
-meetings.delete('/', deleteMeeting);
+meetings.delete('/:meetingId', deleteMeeting);
 
 export default meetings;

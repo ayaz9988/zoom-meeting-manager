@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getMeetingsPage } from "../../../helpers/zoomAuth.ts";
+import { createMeetingHelper, type CreateMeetingRequest, deleteMeetingHelper, getMeetingsPage } from "../../../helpers/zoomAuth.ts";
 import {type Request, type Response } from "express";
 
 export const gettingMeetings = async (req: Request, res:  Response) => {
@@ -31,9 +31,39 @@ export const gettingMeetings = async (req: Request, res:  Response) => {
 };
 
 export const createMeeting = async (req: Request, res:  Response) => {
+  try {
+    const meetingData: CreateMeetingRequest = {
+      topic: req.body.topic || 'Quick Meeting',
+      type: req.body.type || 2, // 2=scheduled
+      start_time: req.body.start_time,
+      duration: req.body.duration,
+      timezone: req.body.timezone || 'UTC',
+      settings: req.body.settings
+    };
 
+    const meeting = await createMeetingHelper(meetingData);
+    
+    res.status(201).json({
+      success: true,
+      meeting
+    });
+  } catch (error: any) {
+    res.status(error.response?.status || 500).json({
+      error: error.response?.data || error.message
+    });
+  }
 }
 
 export const deleteMeeting = async (req: Request, res:  Response) => {
-  
+  try {
+    const meetingId = parseInt(req.params.meetingId as string);
+    
+    await deleteMeetingHelper(meetingId);
+    
+    res.json({ success: true, deleted: meetingId });
+  } catch (error: any) {
+    res.status(error.response?.status || 500).json({
+      error: error.response?.data || error.message
+    });
+  }
 }
