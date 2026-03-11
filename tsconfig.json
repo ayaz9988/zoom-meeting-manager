@@ -23,6 +23,10 @@
     "allowImportingTsExtensions": true,
     "noEmit": true,
 
+    // Decorator Support (required for class-validator)
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,

@@ -1,14 +1,17 @@
+import { validate } from "class-validator";
 import type { CreateMeetingRequest } from "../../domain/entities/Meeting.ts";
 import { CreateMeeting } from "../../use-cases/CreateMeeting.ts";
 import { DeleteMeeting } from "../../use-cases/DeleteMeeting.ts";
 import { GetAllMeetings } from "../../use-cases/GetAllMeetings.ts";
 import { type Request, type Response } from "express";
+import { plainToInstance } from "class-transformer";
+import { CreateMeetingDto } from "../dto/CreateMeetingDto.ts";
 
 export class MeetingController {
     private getAllMeetings: GetAllMeetings;
     private createMeeting: CreateMeeting;
     private deleteMeeting: DeleteMeeting;
-    
+
     constructor(
         getAllMeetings: GetAllMeetings,
         createMeeting: CreateMeeting,
@@ -40,14 +43,17 @@ export class MeetingController {
 
     async create(req: Request, res: Response) {
         try {
-            const meetingData: CreateMeetingRequest = {
-                topic: req.body.topic || 'Quick Meeting',
-                type: req.body.type || 2,
-                start_time: req.body.start_time,
-                duration: req.body.duration,
-                timezone: req.body.timezone || 'UTC',
-                settings: req.body.settings
-            };
+            const dto = plainToInstance(CreateMeetingDto, req.body);
+
+            const errors = await validate(dto);
+
+            if (errors.length > 0) {
+                return res.status(400).json({
+                    errors: errors.map(err => Object.values(err.constraints || {}))
+                });
+            }
+
+            const meetingData: CreateMeetingRequest = dto;
 
             const meeting = await this.createMeeting.execute(meetingData);
 

@@ -4,6 +4,7 @@ import cors from 'cors';
 import path from "path";
 import { fileURLToPath } from "url";
 import { meetingRouter } from "./interface/routes/meetingRoutes.ts";
+import { errorHandler } from "./interface/middleware/errorHandler.ts";
 
 dotenv.config();
 
@@ -32,6 +33,8 @@ app.use(express.json());
 
 
 app.use("/api", meetingRouter);
+
+app.use(errorHandler);
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
