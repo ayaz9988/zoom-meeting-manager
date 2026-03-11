@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:5000/v1';
+const API_BASE = 'http://localhost:5000/api';
 let currentPage = 1;
 let totalPages = 1;
 let nextPageToken = null;

@@ -1,9 +1,9 @@
 import express, { type Request, type Response } from "express";
 import dotenv from "dotenv";
 import cors from 'cors';
-import v1 from "./routes/v1/index.ts";
 import path from "path";
 import { fileURLToPath } from "url";
+import { meetingRouter } from "./interface/routes/meetingRoutes.ts";
 
 dotenv.config();
 
@@ -31,10 +31,10 @@ app.use(express.static(path.join(__dirname, './public')));
 app.use(express.json());
 
 
-app.use("/v1", v1);
+app.use("/api", meetingRouter);
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
     console.log(`Static files: http://localhost:${port}/index.html`);
-    console.log(`API: http://localhost:${port}/v1/meetings`);
+    console.log(`API: http://localhost:${port}/api/meetings`);
 });
