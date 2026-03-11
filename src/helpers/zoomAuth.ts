@@ -3,7 +3,7 @@ import axios from "axios";
 let cachedToken: string | null = null;
 let tokenExpiry = 0;
 
-export default async function getZoomToken() {
+export async function getZoomToken() {
   if (cachedToken && Date.now() < tokenExpiry) {
     return cachedToken;
   }
@@ -21,4 +21,56 @@ export default async function getZoomToken() {
   cachedToken = res.data.access_token;
   tokenExpiry = Date.now() + (res.data.expires_in * 1000) - 60000; // refresh 1min early
   return cachedToken;
+}
+
+export interface ZoomMeeting {
+  id: number;
+  topic: string;
+  start_time: string;
+  duration: number;
+  join_url: string;
+  status: string;
+}
+
+export interface ZoomMeetingsResponse {
+  meetings: ZoomMeeting[];
+  next_page_token?: string;
+  page_count: number;
+  page_number: number;
+  page_size: number;
+  total_records?: number;
+}
+
+export interface PaginatedMeetings {
+  meetings: ZoomMeeting[];
+  next_page_token?: string;
+  page_count: number;
+  page_number: number;
+  page_size: number;
+  total_records?: number;
+  has_more: boolean;
+}
+
+export async function getMeetingsPage(
+  pageToken?: string,
+  pageSize: number = 30,
+  type: 'scheduled' | 'past' | 'upcoming' | 'live' = 'scheduled'
+): Promise<PaginatedMeetings> {
+  const token = await getZoomToken();
+  
+  const params = new URLSearchParams({
+    type,
+    page_size: pageSize.toString(),
+    ...(pageToken && { next_page_token: pageToken })
+  });
+
+  const response = await axios.get<ZoomMeetingsResponse>(
+    `https://api.zoom.us/v2/users/me/meetings?${params}`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+
+  return {
+    ...response.data,
+    has_more: !!response.data.next_page_token
+  };
 }
