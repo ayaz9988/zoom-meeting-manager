@@ -108,3 +108,7 @@ src/
     ├── index.html        # Frontend HTML
     └── script.js         # Frontend JavaScript
 ```
+
+# Zoom meeting API docs
+
+[https://developers.zoom.us/docs/api/rest/reference/zoom-api/methods/#operation/meetingCreate](https://developers.zoom.us/docs/api/rest/reference/zoom-api/methods/#operation/meetingCreate)
