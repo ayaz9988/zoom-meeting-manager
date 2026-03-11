@@ -81,15 +81,15 @@ pnpm start
 ### 5. Access the Application
 
 - **Frontend**: Open [http://localhost:5000/index.html](http://localhost:5000/index.html) in your browser
-- **API**: Available at [http://localhost:5000/v1/meetings](http://localhost:5000/v1/meetings)
+- **API**: Available at [http://localhost:5000/api/meetings](http://localhost:5000/api/meetings)
 
 ## API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/v1/meetings` | List all meetings |
-| POST | `/v1/meetings` | Create a new meeting |
-| DELETE | `/v1/meetings/:meetingId` | Delete a meeting |
+| GET | `/api/meetings` | List all meetings |
+| POST | `/api/meetings` | Create a new meeting |
+| DELETE | `/api/meetings/:meetingId` | Delete a meeting |
 
 ## Project Structure
 
