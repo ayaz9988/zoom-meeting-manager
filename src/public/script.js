@@ -1,16 +1,32 @@
 const API_BASE = 'http://localhost:5000/v1';
+let currentPage = 1;
+let totalPages = 1;
+let nextPageToken = null;
 
-// Load meetings
-async function loadMeetings() {
+async function loadMeetings(pageToken = null) {
+    // Handle case where pageToken might be an Event object from onclick
+    if (pageToken && typeof pageToken === 'object' && pageToken.target) {
+        pageToken = null;
+    }
+    
     const container = document.getElementById('meetingsList');
     container.innerHTML = '<p>Loading...</p>';
     
     try {
-        const response = await fetch(`${API_BASE}/meetings`);
+        let url = `${API_BASE}/meetings`;
+        if (pageToken) {
+            url += `?page_token=${pageToken}`;
+        }
+        
+        const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
         const data = await response.json();
         const meetings = data.meetings || [];
+        
+        currentPage = data.current_page;
+        totalPages = data.total_pages;
+        nextPageToken = data.next_page_token;
         
         if (meetings.length === 0) {
             container.innerHTML = '<p class="text-muted">No meetings found</p>';
@@ -32,13 +48,21 @@ async function loadMeetings() {
             `;
         });
         html += '</ul>';
+        
+        // Add pagination controls
+        html += '<div class="mt-3 d-flex justify-content-between">';
+        const token = nextPageToken || '';
+        html += `<button class="btn btn-secondary" onclick="loadMeetings(null)" ${currentPage <= 1 ? 'disabled' : ''}>Refresh</button>`;
+        html += `<span class="align-self-center">Page ${currentPage === undefined ? 1: currentPage} of ${totalPages === undefined ? 1 : totalPages}</span>`;
+        html += `<button class="btn btn-primary" onclick="loadMeetings('${token}')" ${!nextPageToken ? 'disabled' : ''}>Next</button>`;
+        html += '</div>';
+        
         container.innerHTML = html;
     } catch (error) {
         container.innerHTML = `<p class="text-danger">Error: ${error.message}</p>`;
     }
 }
 
-// Create meeting
 document.getElementById('meetingForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -76,7 +100,6 @@ document.getElementById('meetingForm').addEventListener('submit', async (e) => {
     }
 });
 
-// Delete meeting
 async function deleteMeeting(meetingId) {
     if (!confirm('Are you sure you want to delete this meeting?')) return;
     

@@ -34,7 +34,7 @@ export const createMeeting = async (req: Request, res:  Response) => {
   try {
     const meetingData: CreateMeetingRequest = {
       topic: req.body.topic || 'Quick Meeting',
-      type: req.body.type || 2, // 2=scheduled
+      type: req.body.type || 2,
       start_time: req.body.start_time,
       duration: req.body.duration,
       timezone: req.body.timezone || 'UTC',
