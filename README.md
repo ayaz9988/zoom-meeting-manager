@@ -112,3 +112,24 @@ src/
 # Zoom meeting API docs
 
 [https://developers.zoom.us/docs/api/rest/reference/zoom-api/methods/#operation/meetingCreate](https://developers.zoom.us/docs/api/rest/reference/zoom-api/methods/#operation/meetingCreate)
+
+# UML Diagrams:
+
+## Use Case Diagram:
+
+![use cass diagram](./assets/use-case.png)
+
+## Sequence diagrams
+
+### Seqeunce diagram of getting a list of meetings:
+![seqeunce diagram of getting a list of meetings](./assets/sequence-2.png)
+
+### Seqeunce diagram of creating a meeting:
+![seqeunce diagram of creating a meeting](./assets/sequence-1.png)
+
+### Seqeunce diagram of deleting a meeting:
+![seqeunce diagram of deleting a meeting](./assets/sequence.png)
+
+## Class Diagram:
+
+![class diagram](./assets/class.png)
