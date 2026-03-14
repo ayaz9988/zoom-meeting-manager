@@ -31,7 +31,10 @@ export class MeetingRepository implements IMeetingRepository {
         type: meetingType = 'scheduled',
         pageToken?: string,
     ): Promise<PaginatedMeetings> {
-        const token = await this.getZoomToken();
+        let token = this.cachedToken;
+        if (!token || Date.now() >= this.tokenExpiry) {
+            token = await this.getZoomToken();
+        }
 
         const params = new URLSearchParams({
             type,
@@ -51,7 +54,10 @@ export class MeetingRepository implements IMeetingRepository {
     }
 
     async createMeetingHelper(data: CreateMeetingRequest): Promise<ZoomMeetingCreated> {
-        const token = await this.getZoomToken();
+        let token = this.cachedToken;
+        if (!token || Date.now() >= this.tokenExpiry) {
+            token = await this.getZoomToken();
+        }
 
         try {
             const response = await axios.post(
@@ -72,7 +78,10 @@ export class MeetingRepository implements IMeetingRepository {
     }
 
     async deleteMeetingHelper(meetingId: number) {
-        const token = await this.getZoomToken();
+        let token = this.cachedToken;
+        if (!token || Date.now() >= this.tokenExpiry) {
+            token = await this.getZoomToken();
+        }
 
         try {
             await axios.delete(
