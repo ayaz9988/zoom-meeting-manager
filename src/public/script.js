@@ -92,7 +92,16 @@ document.getElementById('meetingForm').addEventListener('submit', async (e) => {
             body: JSON.stringify(meetingData)
         });
         
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        
+        if (!response.ok) {
+            if (response.status === 400 && data.errors) {
+                const validationMsgs = data.errors.flat().join(', ');
+                throw new Error(`Validation failed: ${validationMsgs}`);
+            }
+            const errorMsg = data.error?.message || data.error || `HTTP ${response.status}`;
+            throw new Error(errorMsg);
+        }
         
         document.getElementById('meetingForm').reset();
         alert('Meeting created successfully!');
@@ -110,7 +119,12 @@ async function deleteMeeting(meetingId) {
             method: 'DELETE'
         });
         
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        
+        if (!response.ok) {
+            const errorMsg = data.error?.message || data.error || `HTTP ${response.status}`;
+            throw new Error(errorMsg);
+        }
         
         alert('Meeting deleted successfully!');
         loadMeetings();

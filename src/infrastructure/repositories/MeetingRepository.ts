@@ -73,7 +73,8 @@ export class MeetingRepository implements IMeetingRepository {
 
             return response.data;
         } catch (err: any) {
-            throw new Error("Failed to create a meeting");
+            const errorMessage = err.response?.data?.message || err.message || "Failed to create a meeting";
+            throw new Error(errorMessage);
         }
     }
 
@@ -91,7 +92,8 @@ export class MeetingRepository implements IMeetingRepository {
                 }
             );
         } catch (err: any) {
-            throw new Error("Failed to delete the meeting");
+            const errorMessage = err.response?.data?.message || err.message || "Failed to delete the meeting";
+            throw new Error(errorMessage);
         }
     }
 }
